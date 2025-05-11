@@ -3,8 +3,8 @@
  *
  * GEN254 - Grafos - 2025/1
  *
- * Nome:      XXXX
- * Matricula: XXXX
+ * Nome:      Eduardo Pazzini Zancanaro // Filipe Medeiros de Almeida
+ * Matricula: 2221101031                // 2221101029
  */
 
 #ifndef GRAFO_H
