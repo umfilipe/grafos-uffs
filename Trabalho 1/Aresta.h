@@ -6,10 +6,11 @@
  * Nome:      Eduardo Pazzini Zancanaro // Filipe Medeiros de Almeida
  * Matricula: 2221101031                // 2221101029
  */
-
 #ifndef ARESTA_H
 
 #define ARESTA_H
+
+#include <string>
 
 class Aresta {
 public:
