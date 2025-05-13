@@ -15,14 +15,8 @@
 #include <iostream>
 class Grafo {
 public:
-    /** Constroi um grafo simples que possui o numero de vertices recebido por
-     *  parametro e que nao possui arestas */
     Grafo(int num_vertices);
 
-    int num_vertices();
-    int num_arestas();
-
-    bool tem_aresta(Aresta e);
     void addAresta(Aresta e);
 
     bool eh_bipartido_1();
@@ -31,11 +25,8 @@ private:
     int num_vertices_;
     int num_arestas_;
     bool dfs(int v, std::vector<int>& cor);
-    void print_vector(const std::vector<int>& v, const std::string& nome);
     std::vector<std::vector<int>> matriz_adj_;
     bool eh_bipartido_1(int vertice, std::vector<bool>& removed, std::vector<int>& conjunto);
-    void valida_vertice(int v);
-    void valida_aresta(Aresta e);
 };
 
 #endif /* GRAFO_H */

@@ -10,8 +10,6 @@
 
 #define ARESTA_H
 
-#include <string>
-
 class Aresta {
 public:
     const int v1;
@@ -20,4 +18,4 @@ public:
     Aresta(int v1, int v2);
 };
 
-#endif /* ARESTA_H */
+#endif

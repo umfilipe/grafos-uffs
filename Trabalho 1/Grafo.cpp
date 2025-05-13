@@ -38,45 +38,45 @@ bool Grafo::eh_bipartido_1(int vertice, std::vector<bool>& removido, std::vector
         return true;
     }
 
-    int menorIndice = -1;
+    int indice = -1;
     for (int i = 0; i < num_vertices_; i++) {
         if (!removido[i]) {
-            menorIndice = i;
+            indice = i;
             break;
         }
     }
 
-    removido[menorIndice] = true;
+    removido[indice] = true;
 
     if (eh_bipartido_1(vertice + 1, removido, conjunto)) {
         bool podeAdicionarConjunto1 = true;
         for (int i = 0; i < num_vertices_; i++) {
-            if (matriz_adj_[menorIndice][i] && conjunto[i] == 1) {
+            if (matriz_adj_[indice][i] && conjunto[i] == 1) {
                 podeAdicionarConjunto1 = false;
                 break;
             }
         }
 
         if (podeAdicionarConjunto1) {
-            conjunto[menorIndice] = 1;
+            conjunto[indice] = 1;
             return true;
         }
 
         bool podeAdicionarConjunto2 = true;
         for (int i = 0; i < num_vertices_; i++) {
-            if (matriz_adj_[menorIndice][i] && conjunto[i] == 2) {
+            if (matriz_adj_[indice][i] && conjunto[i] == 2) {
                 podeAdicionarConjunto2 = false;
                 break;
             }
         }
 
         if (podeAdicionarConjunto2) {
-            conjunto[menorIndice] = 2;
+            conjunto[indice] = 2;
             return true;
         }
     }
 
-    removido[menorIndice] = false;
+    removido[indice] = false;
     return false;
 }
 
