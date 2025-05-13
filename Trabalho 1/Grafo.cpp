@@ -27,14 +27,14 @@ void Grafo::addAresta(Aresta e) {
     num_arestas_++;
 }
 
-bool Grafo::eh_bipartido_1(int vertice, std::vector<bool>& removido, std::vector<int>& conjunto) {
-    int count_removidos = 0;
+bool Grafo::eh_bipartido_1(int vertice, std::vector<bool>& removido, std::vector<bool>& set1, std::vector<bool>& set2) {
+    int contadorRemovidos = 0;
     for (bool flag : removido) {
-        if (flag){
-            count_removidos++;
+        if (flag) {
+            contadorRemovidos++;
         }
     }
-    if (count_removidos == num_vertices_) {
+    if (contadorRemovidos == num_vertices_) {
         return true;
     }
 
@@ -48,30 +48,30 @@ bool Grafo::eh_bipartido_1(int vertice, std::vector<bool>& removido, std::vector
 
     removido[indice] = true;
 
-    if (eh_bipartido_1(vertice + 1, removido, conjunto)) {
-        bool podeAdicionarConjunto1 = true;
+    if (eh_bipartido_1(vertice + 1, removido, set1, set2)) {
+        bool podeConjunto1 = true;
         for (int i = 0; i < num_vertices_; i++) {
-            if (matriz_adj_[indice][i] && conjunto[i] == 1) {
-                podeAdicionarConjunto1 = false;
+            if (matriz_adj_[indice][i] && set1[i]) {
+                podeConjunto1 = false;
                 break;
             }
         }
 
-        if (podeAdicionarConjunto1) {
-            conjunto[indice] = 1;
+        if (podeConjunto1) {
+            set1[indice] = true;
             return true;
         }
 
-        bool podeAdicionarConjunto2 = true;
+        bool podeConjunto2 = true;
         for (int i = 0; i < num_vertices_; i++) {
-            if (matriz_adj_[indice][i] && conjunto[i] == 2) {
-                podeAdicionarConjunto2 = false;
+            if (matriz_adj_[indice][i] && set2[i]) {
+                podeConjunto2 = false;
                 break;
             }
         }
 
-        if (podeAdicionarConjunto2) {
-            conjunto[indice] = 2;
+        if (podeConjunto2) {
+            set2[indice] = true;
             return true;
         }
     }
@@ -82,9 +82,10 @@ bool Grafo::eh_bipartido_1(int vertice, std::vector<bool>& removido, std::vector
 
 bool Grafo::eh_bipartido_1() {
     std::vector<bool> removido(num_vertices_, false);
-    std::vector<int> conjunto(num_vertices_, 0);
+    std::vector<bool> conjunto1(num_vertices_, false);
+    std::vector<bool> conjunto2(num_vertices_, false);
 
-    return eh_bipartido_1(0, removido, conjunto);
+    return eh_bipartido_1(0, removido, conjunto1, conjunto2);
 }
 
 bool Grafo::dfs(int v, std::vector<int>& cor) {
