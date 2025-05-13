@@ -6,11 +6,9 @@
  * Nome:      Eduardo Pazzini Zancanaro // Filipe Medeiros de Almeida
  * Matricula: 2221101031                // 2221101029
  */
+
 #include "Grafo.h"
-#include <exception>
-#include <stdexcept>
-#include <string>
-#include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -27,60 +25,66 @@ Grafo::Grafo(int num_vertices) {
 void Grafo::addAresta(Aresta e) {
     matriz_adj_[e.v1][e.v2] = 1;
     matriz_adj_[e.v2][e.v1] = 1;
-
     num_arestas_++;
 }
 
-bool Grafo::eh_bipartido_1(vector<int>& removed, vector<int>& set1, vector<int>& set2) {
-    int vertice = -1;
+// Implementação recursiva
+bool Grafo::eh_bipartido_1(int vertice, vector<int>& removed, vector<int>& conjunto) {
+    if (removed.size() == num_vertices_) return true;
+
+    // Encontrar o próximo vértice não removido
+    int menorIndice = -1;
     for (int i = 0; i < num_vertices_; i++) {
-        if (!removed[i]) {
-            vertice = i;
-            break;
-        }
-    }
-    if (vertice == -1) return true;
-
-    bool CanBeSet1 = true;
-    for (int i = 0; i < num_vertices_; i++)
-    {
-        if (matriz_adj_[vertice][i] && set1[i]) {
-            CanBeSet1 = false;
+        if (find(removed.begin(), removed.end(), i) == removed.end()) {
+            menorIndice = i;
             break;
         }
     }
 
-    if(CanBeSet1) {
-        set1[vertice] = true;
-        removed[vertice] = true;
-        return eh_bipartido_1(removed, set1, set2);
-    } else {
-        bool CanBeSet2 = true;
-        for (int i = 0; i < num_vertices_; i++)
-        {
-            if (matriz_adj_[vertice][i] && set1[i]) {
-                CanBeSet2 = false;
+    removed.push_back(menorIndice);
+
+    if (eh_bipartido_1(vertice + 1, removed, conjunto)) {
+        // Tenta adicionar ao conjunto 1
+        bool podeConjunto1 = true;
+        for (int i = 0; i < num_vertices_; i++) {
+            if (matriz_adj_[menorIndice][i] && conjunto[i] == 1) {
+                podeConjunto1 = false;
                 break;
             }
         }
-        if (CanBeSet2)
-        {
-            set2[vertice] = true; // adiciona o vertice ao conjunto 2
-            removed[vertice] = true; // remove o vertice do grafo
-            return eh_bipartido_1(removed, set1, set2); // chama a funcao recursivamente
+
+        if (podeConjunto1) {
+            conjunto[menorIndice] = 1;
+            return true;
+        }
+
+        // Tenta adicionar ao conjunto 2
+        bool podeConjunto2 = true;
+        for (int i = 0; i < num_vertices_; i++) {
+            if (matriz_adj_[menorIndice][i] && conjunto[i] == 2) {
+                podeConjunto2 = false;
+                break;
+            }
+        }
+
+        if (podeConjunto2) {
+            conjunto[menorIndice] = 2;
+            return true;
         }
     }
+
+    removed.pop_back();
     return false;
 }
 
 bool Grafo::eh_bipartido_1() {
-    std::vector<int> removed(num_vertices_, false);
-    std::vector<int> set1(num_vertices_, false);
-    std::vector<int> set2(num_vertices_, false);
+    vector<int> removidos;
+    vector<int> conjunto(num_vertices_, 0);  // 0: não atribuído, 1 ou 2
 
-    return eh_bipartido_1(removed, set1, set2);
+    return eh_bipartido_1(0, removidos, conjunto);
 }
 
+// DFS (já estava correto)
 bool Grafo::dfs(int v, std::vector<int>& cor) {
     for (int u = 0; u < num_vertices_; ++u) {
         if (matriz_adj_[v][u]) {
@@ -96,14 +100,12 @@ bool Grafo::dfs(int v, std::vector<int>& cor) {
 }
 
 bool Grafo::eh_bipartido_2() {
-    std::vector<int> cor(num_vertices_, -1);
-
+    vector<int> cor(num_vertices_, -1);
     for (int i = 0; i < num_vertices_; ++i) {
         if (cor[i] == -1) {
             cor[i] = 0;
             if (!dfs(i, cor)) return false;
         }
     }
-
     return true;
 }
