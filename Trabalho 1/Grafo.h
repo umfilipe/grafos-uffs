@@ -33,7 +33,7 @@ private:
     bool dfs(int v, std::vector<int>& cor);
     void print_vector(const std::vector<int>& v, const std::string& nome);
     std::vector<std::vector<int>> matriz_adj_;
-    bool eh_bipartido_1(int vertice, std::vector<int>& removed, std::vector<int>& conjunto);
+    bool eh_bipartido_1(int vertice, std::vector<bool>& removed, std::vector<int>& conjunto);
     void valida_vertice(int v);
     void valida_aresta(Aresta e);
 };

@@ -8,7 +8,6 @@
  */
 
 #include "Grafo.h"
-#include <algorithm>
 
 using namespace std;
 
@@ -28,63 +27,66 @@ void Grafo::addAresta(Aresta e) {
     num_arestas_++;
 }
 
-// Implementação recursiva
-bool Grafo::eh_bipartido_1(int vertice, vector<int>& removed, vector<int>& conjunto) {
-    if (removed.size() == num_vertices_) return true;
+bool Grafo::eh_bipartido_1(int vertice, std::vector<bool>& removido, std::vector<int>& conjunto) {
+    int count_removidos = 0;
+    for (bool flag : removido) {
+        if (flag){
+            count_removidos++;
+        }
+    }
+    if (count_removidos == num_vertices_) {
+        return true;
+    }
 
-    // Encontrar o próximo vértice não removido
     int menorIndice = -1;
     for (int i = 0; i < num_vertices_; i++) {
-        if (find(removed.begin(), removed.end(), i) == removed.end()) {
+        if (!removido[i]) {
             menorIndice = i;
             break;
         }
     }
 
-    removed.push_back(menorIndice);
+    removido[menorIndice] = true;
 
-    if (eh_bipartido_1(vertice + 1, removed, conjunto)) {
-        // Tenta adicionar ao conjunto 1
-        bool podeConjunto1 = true;
+    if (eh_bipartido_1(vertice + 1, removido, conjunto)) {
+        bool podeAdicionarConjunto1 = true;
         for (int i = 0; i < num_vertices_; i++) {
             if (matriz_adj_[menorIndice][i] && conjunto[i] == 1) {
-                podeConjunto1 = false;
+                podeAdicionarConjunto1 = false;
                 break;
             }
         }
 
-        if (podeConjunto1) {
+        if (podeAdicionarConjunto1) {
             conjunto[menorIndice] = 1;
             return true;
         }
 
-        // Tenta adicionar ao conjunto 2
-        bool podeConjunto2 = true;
+        bool podeAdicionarConjunto2 = true;
         for (int i = 0; i < num_vertices_; i++) {
             if (matriz_adj_[menorIndice][i] && conjunto[i] == 2) {
-                podeConjunto2 = false;
+                podeAdicionarConjunto2 = false;
                 break;
             }
         }
 
-        if (podeConjunto2) {
+        if (podeAdicionarConjunto2) {
             conjunto[menorIndice] = 2;
             return true;
         }
     }
 
-    removed.pop_back();
+    removido[menorIndice] = false;
     return false;
 }
 
 bool Grafo::eh_bipartido_1() {
-    vector<int> removidos;
-    vector<int> conjunto(num_vertices_, 0);  // 0: não atribuído, 1 ou 2
+    std::vector<bool> removido(num_vertices_, false);
+    std::vector<int> conjunto(num_vertices_, 0);
 
-    return eh_bipartido_1(0, removidos, conjunto);
+    return eh_bipartido_1(0, removido, conjunto);
 }
 
-// DFS (já estava correto)
 bool Grafo::dfs(int v, std::vector<int>& cor) {
     for (int u = 0; u < num_vertices_; ++u) {
         if (matriz_adj_[v][u]) {
