@@ -26,7 +26,7 @@ private:
     int num_arestas_;
     bool dfs(int v, std::vector<int>& cor);
     std::vector<std::vector<int>> matriz_adj_;
-    bool eh_bipartido_1(int vertice, std::vector<bool>& removido, std::vector<bool>& set1, std::vector<bool>& set2);
+    bool eh_bipartido_1(std::vector<bool>& removido, std::vector<bool>& set1, std::vector<bool>& set2);
 };
 
 #endif /* GRAFO_H */
